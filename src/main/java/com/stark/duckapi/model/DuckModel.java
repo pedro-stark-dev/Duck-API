@@ -5,6 +5,9 @@ public class DuckModel {
     private Integer years;
     private String job;
     private String nickname;
+    public DuckModel(){
+
+    }
 
     public String getName() {
         return name;

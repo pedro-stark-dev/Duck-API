@@ -11,26 +11,24 @@ import java.util.Optional;
 public class DuckManagerService {
     private final List<DuckModel> ducks = new ArrayList<>();
 
-    public List<DuckModel> getDucks(){
+    public List<DuckModel> getDucks() {
         return ducks;
     }
-    public Optional<DuckModel> getDucksByNickname(String nickname){
+
+    public Optional<DuckModel> getDucksByNickname(String nickname) {
         return ducks.stream()
                 .filter(d -> d.getNickname().equals(nickname))
                 .findAny();
     }
-    public Optional<DuckModel> getDucksByName(String nickname){
-        return ducks.stream()
-                .filter(d -> d.getNickname().equals(nickname))
-                .findAny();
-    }
-    public DuckModel create(DuckModel duckModel){
+
+    public DuckModel create(DuckModel duckModel) {
         ducks.add(duckModel);
         return duckModel;
     }
-    public DuckModel update(String nickname, DuckModel duckModel){
+
+    public DuckModel update(String nickname, DuckModel duckModel) {
         Optional<DuckModel> epr = getDucksByNickname(nickname);
-        if (epr.isPresent()){
+        if (epr.isPresent()) {
             DuckModel exists = epr.get();
             exists.setName(duckModel.getName());
             exists.setJob(duckModel.getJob());
@@ -39,7 +37,8 @@ public class DuckManagerService {
         }
         return null;
     }
-    public boolean delete(String nickname){
+
+    public boolean delete(String nickname) {
         return ducks.removeIf(d -> d.getNickname().equals(nickname));
     }
 }
