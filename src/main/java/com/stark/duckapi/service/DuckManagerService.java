@@ -1,44 +1,43 @@
 package com.stark.duckapi.service;
 
 import com.stark.duckapi.model.DuckModel;
+import com.stark.duckapi.repository.DuckRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DuckManagerService {
-    private final List<DuckModel> ducks = new ArrayList<>();
+    private final DuckRepository repository;
+
+    public DuckManagerService(DuckRepository repository) {
+        this.repository = repository;
+    }
 
     public List<DuckModel> getDucks() {
-        return ducks;
+        return repository.findAll();
     }
 
     public Optional<DuckModel> getDucksByNickname(String nickname) {
-        return ducks.stream()
-                .filter(d -> d.getNickname().equals(nickname))
-                .findAny();
+        return repository.findByNickname(nickname);
     }
 
     public DuckModel create(DuckModel duckModel) {
-        ducks.add(duckModel);
-        return duckModel;
+        return repository.save(duckModel);
     }
 
     public DuckModel update(String nickname, DuckModel duckModel) {
-        Optional<DuckModel> epr = getDucksByNickname(nickname);
-        if (epr.isPresent()) {
-            DuckModel exists = epr.get();
-            exists.setName(duckModel.getName());
-            exists.setJob(duckModel.getJob());
-            exists.setYears(duckModel.getYears());
-            return exists;
-        }
-        return null;
+        return repository.findByNickname(nickname)
+                .map(existing -> {
+                    existing.setName(duckModel.getName());
+                    existing.setYears(duckModel.getYears());
+                    existing.setJob(duckModel.getJob());
+                    return repository.save(existing);
+                }).orElse(null);
     }
 
     public boolean delete(String nickname) {
-        return ducks.removeIf(d -> d.getNickname().equals(nickname));
+        return repository.deleteByNickname(nickname);
     }
 }
